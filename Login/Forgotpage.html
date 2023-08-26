@@ -1,0 +1,46 @@
+<!-- forgotPassword.html -->
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <title>Forgot Password</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script>
+        var app = angular.module("myApp", []);
+
+        app.controller("forgotPasswordCtrl", function ($scope, $http) {
+            $scope.sendResetEmail = function () {
+                var user = {
+                    Email: $scope.email
+                };
+                $http.post("https://localhost:44352/api/home/forget", user).then(
+                    function (response) {
+                        // Check response and handle success or error
+                        $scope.msg = response.data.Msg;
+                        $scope.color = response.status === 200 ? "green" : "red";
+                    },
+                    function (error) {
+                        // Handle error
+                        $scope.msg = "An error occurred. Please try again later.";
+                        $scope.color = "red";
+                    }
+                );
+            };
+        });
+    </script>
+</head>
+<body ng-controller="forgotPasswordCtrl">
+    <h1>Forgot Password</h1>
+    <form>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" ng-model="email" required>
+        </div>
+        <div>
+            <button ng-click="sendResetEmail()">Send Reset Email</button>
+        </div>
+        <div>
+            <span style="color:{{color}}">{{msg}}</span>
+        </div>
+    </form>
+</body>
+</html>

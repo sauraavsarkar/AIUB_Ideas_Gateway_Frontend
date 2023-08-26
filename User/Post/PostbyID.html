@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <title>Display Post</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body ng-controller="displayPostCtrl">
+
+    <h1>Display Post</h1>
+
+    <form ng-submit="getPost()">
+        <label for="postId">Post ID:</label>
+        <input type="number" id="postId" ng-model="postId" required><br>
+        
+        <button type="submit">Get Post</button>
+    </form>
+    
+    <div ng-if="post">
+        <h2>{{ post.Title }}</h2>
+        <p>{{ post.Content }}</p>
+    </div>
+
+    <script>
+        var app = angular.module('myApp', []);
+        
+        app.controller('displayPostCtrl', function($scope, $http) {
+            $scope.postId = '';
+            $scope.post = null;
+            
+            $scope.getPost = function() {
+                $http.post('https://localhost:44352/api/post/' + $scope.postId)
+                    .then(function(response) {
+                        $scope.post = response.data;
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error.data);
+                        $scope.post = null;
+                    });
+            };
+        });
+    </script>
+</body>
+</html>

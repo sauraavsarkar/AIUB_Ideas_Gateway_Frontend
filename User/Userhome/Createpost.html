@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Post</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body>
+
+<div ng-controller="createPostController">
+    <h2>Create a New Post</h2>
+    <form ng-submit="createPost()">
+        <label for="title">Title:</label>
+        <input type="text" ng-model="post.Title" id="title" required><br>
+        
+        <label for="content">Content:</label>
+        <textarea ng-model="post.Content" id="content" rows="4" required></textarea><br>
+        
+        <button type="submit">Create Post</button>
+    </form>
+    
+    <p ng-show="createError">{{ createError }}</p>
+    <p ng-show="createSuccess">{{ createSuccess }}</p>
+</div>
+
+<script>
+    var app = angular.module('myApp', []);
+
+    app.controller('createPostController', function ($scope, $http) {
+        $scope.post = {
+            Title: '',
+            Content: ''
+        };
+        $scope.createError = '';
+        $scope.createSuccess = '';
+
+        $scope.createPost = function () {
+            if ($scope.post.Title && $scope.post.Content) {
+                var token = ''; // Get the authorization token
+                $http.post('/api/post/create', $scope.post, { headers: { 'Authorization': token } })
+                    .then(function (response) {
+                        $scope.createSuccess = response.data.Msg;
+                        $scope.createError = '';
+                    })
+                    .catch(function (error) {
+                        $scope.createSuccess = '';
+                        $scope.createError = 'An error occurred while creating the post.';
+                    });
+            } else {
+                $scope.createSuccess = '';
+                $scope.createError = 'Please fill in both the title and content.';
+            }
+        };
+    });
+</script>
+
+</body>
+</html>

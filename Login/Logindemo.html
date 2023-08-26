@@ -1,0 +1,70 @@
+<html>
+	<head>
+	    <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Font Icon -->
+        <link rel="stylesheet" href="../../fonts/material-icon/css/material-design-iconic-font.min.css">
+
+    <!-- Main css -->
+	    <link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/homestyle.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+		<script>
+    var app = angular.module("my-app", []);
+
+    app.controller("news-ctrl", function ($scope, $http) {
+        $http.get("https://localhost:44352/api/home").then(function (resp) {
+            $scope.posts = resp.data; // Assuming your API returns an array of posts
+        }, function (err) {
+            console.error("Error fetching data:", err);
+        }); 
+    });
+	
+	app.controller("logout-ctrl", function ($scope, $http) {
+            $scope.message = "";
+
+            $scope.logout = function () {
+                // Implement your logout API call here
+                $http.post("https://localhost:44352/api/logout", {}).then(function (resp) {
+                    $scope.message = resp.data.Msg;
+                }, function (err) {
+                    $scope.message = "An error occurred while logging out.";
+                });
+            };
+        });
+</script>
+
+	</head>
+	<body ng-app="my-app">
+		
+		<div class="header">
+  <a href="Userhomepage.html" class="logo">AIUB Ideas Gateway</a>
+  <div class="header-right">
+    <a href="Userhomepage.html">Home</a>
+    <a href="#contact">Contact</a>
+    <a href="#about">About</a>
+	<a class="active" href="#Login">Login</a>
+  </div>
+</div>
+
+
+    <div ng-controller="news-ctrl">
+        <div ng-repeat="post in posts">
+            <h1>{{post.Title}}</h1>
+            <p>{{post.Content}}</p>
+            <p>{{post.CreatedAt}}</p>
+            <p>{{post.UserID}}</p>
+        </div>
+    </div>
+	
+	<div ng-controller="logout-ctrl">
+        <h2>Logout Page</h2>
+        <button ng-click="logout()">Logout</button>
+        <p>{{message}}</p>
+    </div>
+ 
+
+
+	</body>
+</html>

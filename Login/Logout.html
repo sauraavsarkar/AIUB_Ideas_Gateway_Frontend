@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body ng-app="my-app">
+    <div ng-controller="logout-ctrl">
+        <h2>Logout Page</h2>
+        <button ng-click="logout()">Logout</button>
+        <p>{{message}}</p>
+    </div>
+
+    <script>
+        var app = angular.module("my-app", []);
+
+        app.controller("logout-ctrl", function ($scope, $http) {
+            $scope.message = "";
+
+            $scope.logout = function () {
+                // Implement your logout API call here
+                $http.post("https://localhost:44352/api/logout", {}).then(function (resp) {
+                    $scope.message = resp.data.Msg;
+                }, function (err) {
+                    $scope.message = "An error occurred while logging out.";
+                });
+            };
+        });
+    </script>
+</body>
+</html>
