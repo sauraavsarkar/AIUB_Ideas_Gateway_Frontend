@@ -10,30 +10,41 @@
 	    <link rel="stylesheet" href="../css/style.css">
 		<link rel="stylesheet" href="../css/homestyle.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-		<script>
-			    var app = angular.module("my-app", []);
-    
-						app.controller("login-ctrl", function ($scope, $http, $window) {
-						$scope.login = function () {
-				var obj = {
-						Username: $scope.UserName,
-						Password: $scope.Password
-						};
-						$http.post("https://localhost:44352/api/login", obj).then(function (resp) {
-						$scope.msg = resp.data.TokenKey;
-						$scope.color = "green";
+<!-- ... Your HTML code ... -->
+<!-- ... Your HTML code ... -->
 
-                // Redirect after successful login
-						$window.location.href = "../User/Userhome/Userhomepage.html"; // Replace with the desired URL
-						},
-				function (err) {
-						$scope.msg = err.data.Msg;
-						$scope.color = "red";
-            });
+<script>
+
+    var app = angular.module("my-app", []);
+
+app.controller("login-ctrl", function ($scope, $http, $window) {
+    $scope.login = function () {
+        var obj = {
+            Username: $scope.UserName,
+            Password: $scope.Password
         };
-    });
-			
-		</script>
+        $http.post("https://localhost:44352/api/login", obj).then(function (resp) {
+            var token = resp.data.TokenKey;
+            var username = $scope.UserName;
+            var userId = resp.data.UserId; // Assuming you have the userId in the login response
+
+            // Redirect to Userhomepagedamo with token, username, and userId as query parameters
+            $window.location.href = "../User/Userhome/Userhomepage.html?token=" + token + "&username=" + username + "&userId=" + userId;
+        }, function (err) {
+            $scope.msg = err.data.Msg;
+            $scope.color = "red";
+        });
+    };
+});
+
+
+</script>
+
+<!-- ... Rest of your HTML code ... -->
+
+
+<!-- ... Rest of your HTML code ... -->
+
 	</head>
 	<body ng-app="my-app">
 		

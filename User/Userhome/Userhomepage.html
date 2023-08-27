@@ -12,6 +12,19 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 		<script>
     var app = angular.module("my-app", []);
+	
+	app.controller("userhome-ctrl", function ($scope, $http, $window) {
+    // Retrieve the token and username from the query parameters
+    var urlParams = new URLSearchParams(window.location.search);
+    $scope.token = urlParams.get('token'); // Assign the token to the $scope variable
+    $scope.username = urlParams.get('username'); // Assign the username to the $scope variable
+	$scope.userId = urlParams.get('userId');
+
+    // Use the token for authorized requests
+    $http.defaults.headers.common.Authorization = 'Bearer ' + $scope.token;
+
+});
+
 
     app.controller("news-ctrl", function ($scope, $http) {
         $http.get("https://localhost:44352/api/home").then(function (resp) {
@@ -59,6 +72,13 @@
   </div>
 </div>
 
+	<div ng-controller="userhome-ctrl">
+    <h2>Welcome to Userhomepage, {{username}}!</h2>
+    <p>Token: {{token}}</p>
+	<p>userId: {{userId}}</p>
+    <!-- ... Other content ... -->
+</div>
+
 <div ng-controller="searchController">
     <h2>Search Posts</h2>
     <form ng-submit="search()">
@@ -87,6 +107,7 @@
     </div>
 	
 
+	
 
 	</body>
 </html>

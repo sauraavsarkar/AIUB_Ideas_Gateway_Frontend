@@ -1,30 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="my-app">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logout</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <!-- Your meta tags, styles, and scripts here -->
 </head>
-<body ng-app="my-app">
-    <div ng-controller="logout-ctrl">
-        <h2>Logout Page</h2>
+<body>
+    <div ng-controller="userhome-ctrl">
+        <!-- Your user homepage content here -->
+        <h1>Welcome, {{loggedInUserName}}!</h1>
         <button ng-click="logout()">Logout</button>
-        <p>{{message}}</p>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script>
         var app = angular.module("my-app", []);
 
-        app.controller("logout-ctrl", function ($scope, $http) {
-            $scope.message = "";
+        app.controller("userhome-ctrl", function ($scope, $http, $window) {
+            // Get token and username from local storage or cookies
+            $scope.token = localStorage.getItem("token");
+            $scope.loggedInUserName = localStorage.getItem("username");
 
             $scope.logout = function () {
-                // Implement your logout API call here
-                $http.post("https://localhost:44352/api/logout", {}).then(function (resp) {
-                    $scope.message = resp.data.Msg;
+                $http.post("https://localhost:44352/api/logout", null, {
+                    headers: { Authorization: 'Bearer ' + $scope.token }
+                }).then(function (resp) {
+                    // Clear token and username from storage
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("username");
+
+                    // Redirect to the login page after successful logout
+                    $window.location.href = "../Login.html"; // Replace with the desired URL
                 }, function (err) {
-                    $scope.message = "An error occurred while logging out.";
+                    console.log("Logout failed:", err);
                 });
             };
         });
