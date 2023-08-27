@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Monthly Job Post Counts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .monthly-count {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .monthly-count strong {
+            display: inline-block;
+            width: 100px;
+            color: #555;
+        }
+        .monthly-count .year {
+            color: #e74c3c;
+        }
+        .monthly-count .month {
+            color: #3498db;
+        }
+        .monthly-count .post-count {
+            color: #27ae60;
+        }
+    </style>
+	
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+	<script>
+        var app = angular.module('myApp', []);
+        
+        app.controller('monthlyPostCountCtrl', function($scope, $http) {
+            $scope.monthlyPostCounts = [];
+            $scope.error = null;
+            
+            $scope.getMonthlyPostCounts = function() {
+                $http.get('https://localhost:44352/api/job/reports/monthly_jobtpostcount')
+                    .then(function(response) {
+                        if (response.data.Msg) {
+                            $scope.monthlyPostCounts = [];
+                        } else {
+                            $scope.monthlyPostCounts = response.data;
+                        }
+                        $scope.error = null;
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error.data);
+                        $scope.monthlyPostCounts = [];
+                        $scope.error = 'Error fetching monthly post counts.';
+                    });
+            };
+        });
+    </script>
+</head>
+<body>
+    <div class="container" ng-controller="monthlyPostCountCtrl" ng-init="getMonthlyPostCounts()">
+        <div class="header">
+            <h2>Monthly Job Post Counts for Current Year</h2>
+        </div>
+        
+        <div class="error" ng-if="error">
+            <p>Error: {{ error }}</p>
+        </div>
+        
+        <div ng-repeat="monthlyCount in monthlyPostCounts" class="monthly-count">
+            <div>
+                <strong class="year">Year:</strong> {{ monthlyCount.Year }}
+            </div>
+            <div>
+                <strong class="month">Month:</strong> {{ monthlyCount.Month }}
+            </div>
+            <div>
+                <strong class="post-count">JobPost:</strong> {{ monthlyCount.PostCount }}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

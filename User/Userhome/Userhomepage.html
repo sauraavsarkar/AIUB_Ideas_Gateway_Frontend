@@ -1,17 +1,95 @@
-<html>
-	<head>
-	    <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!DOCTYPE html>
+<html lang="en" ng-app="my-app">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- Font Icon -->
-        <link rel="stylesheet" href="../../fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="../../fonts/material-icon/css/material-design-iconic-font.min.css">
 
     <!-- Main css -->
-	    <link rel="stylesheet" href="../../css/style.css">
-		<link rel="stylesheet" href="../../css/homestyle.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-		<script>
-    var app = angular.module("my-app", []);
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/homestyle.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .logo {
+            float: left;
+            padding: 20px 30px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+		.container a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .container a:hover {
+            color: #2980b9;
+        }
+        h2 {
+            text-align: center;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button[type="submit"] {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+		.username {
+            color: #e74c3c; /* Choose your desired color */
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script>
+       var app = angular.module("my-app", []);
 	
 	app.controller("userhome-ctrl", function ($scope, $http, $window) {
     // Retrieve the token and username from the query parameters
@@ -57,57 +135,50 @@
         };
     });
 	
-</script>
-
-	</head>
-	<body ng-app="my-app">
-		
-		<div class="header">
-  <a href="Userhomepage.html" class="logo">AIUB Ideas Gateway</a>
-  <div class="header-right">
-    <a href="Userhomepage.html">Home</a>
-    <a href="#contact">Contact</a>
-    <a href="#about">About</a>
-	<a class="active" href="#Login">Login</a>
-  </div>
-</div>
-
-	<div ng-controller="userhome-ctrl">
-    <h2>Welcome to Userhomepage, {{username}}!</h2>
-    <p>Token: {{token}}</p>
-	<p>userId: {{userId}}</p>
-    <!-- ... Other content ... -->
-</div>
-
-<div ng-controller="searchController">
-    <h2>Search Posts</h2>
-    <form ng-submit="search()">
-        <input type="text" ng-model="query" placeholder="Enter search query">
-        <button type="submit">Search</button>
-    </form>
-    
-    <div ng-show="searchResults.length > 0">
-        <h3>Search Results:</h3>
-        <ul>
-            <li ng-repeat="post in searchResults">{{ post.Title }}</li>
-        </ul>
-    </div>
-    
-    <p ng-show="searchError">{{ searchError }}</p>
-</div>
-
-
-    <div ng-controller="news-ctrl">
-        <div ng-repeat="post in posts">
-            <h1>{{post.Title}}</h1>
-            <p>{{post.Content}}</p>
-            <p>{{post.CreatedAt}}</p>
-            <p>{{post.UserID}}</p>
+    </script>
+</head>
+<body>
+    <div class="header">
+        <a href="Userhomepage.html" class="logo">AIUB Ideas Gateway</a>
+        <div class="header-right">
+            <a href="Userhomepage.html">Home</a>
+            <a href="#contact">Contact</a>
+            <a href="#about">About</a>
+            <a href="Jobhomepage.html">Job Post</a>
+            <a class="active" href="#Login">Login</a>
         </div>
     </div>
-	
 
-	
+    <div class="container" ng-controller="userhome-ctrl">
+       <h2>Welcome, <span class="username">{{username}}</span>!</h2>
+        <p>Token: {{token}}</p>
+        <p>userId: {{userId}}</p>
+        <!-- ... Other content ... -->
+    </div>
 
-	</body>
+    <div class="container" ng-controller="searchController">
+        <h2>Search Posts</h2>
+        <form ng-submit="search()">
+            <input type="text" ng-model="query" placeholder="Enter search query">
+            <button type="submit">Search</button>
+        </form>
+		<a href="../Post/PostbyID.html">Post by Id</a>
+        <div ng-show="searchResults.length > 0">
+            <h3>Search Results:</h3>
+            <ul>
+                <li ng-repeat="post in searchResults">{{ post.Title }}</li>
+            </ul>
+        </div>
+        <p class="error" ng-show="searchError">{{ searchError }}</p>
+    </div>
+
+    <div class="container" ng-controller="news-ctrl">
+        <div ng-repeat="post in posts">
+            <h1>{{post.Title}}</h1>
+			<p>Created At: {{post.CreatedAt}}</p>
+            <p>Created by: {{post.UserID}}</p>
+            <p>{{post.Content}}</p>
+        </div>
+    </div>
+</body>
 </html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Job List Page</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h2 {
+            text-align: center;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        a {
+            display: block;
+            margin-bottom: 10px;
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+        a:hover {
+            color: #2980b9;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 15px 0;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .searching {
+            color: #3498db;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .job-title {
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+    </style>
+    <script>
+        var app = angular.module('myApp', []);
+        
+        app.controller('jobsListCtrl', function($scope, $http) {
+            $scope.jobs = [];
+            $scope.error = null;
+            $scope.searching = false;
+            
+            $scope.getJobs = function() {
+                $http.get('https://localhost:44352/api/jobs')
+                    .then(function(response) {
+                        if (response.data.Msg) {
+                            $scope.jobs = [];
+                        } else {
+                            $scope.jobs = response.data;
+                        }
+                        $scope.error = null;
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error.data);
+                        $scope.jobs = [];
+                        $scope.error = 'Error fetching job list.';
+                    });
+            };
+            
+            $scope.searchJobs = function() {
+                if ($scope.searchQuery) {
+                    $scope.searching = true;
+                    $http.get('https://localhost:44352/api/home/search/job/' + $scope.searchQuery)
+                        .then(function(response) {
+                            if (response.data.Msg) {
+                                $scope.jobs = [];
+                            } else {
+                                $scope.jobs = response.data;
+                            }
+                            $scope.error = null;
+                            $scope.searching = false;
+                        })
+                        .catch(function(error) {
+                            console.error('Error:', error.data);
+                            $scope.jobs = [];
+                            $scope.error = 'Error searching for jobs.';
+                            $scope.searching = false;
+                        });
+                } else {
+                    $scope.getJobs();
+                }
+            };
+        });
+    </script>
+</head>
+<body>
+    <div class="container" ng-controller="jobsListCtrl" ng-init="getJobs()">
+        <h2>Job List</h2>
+        
+        <a href="../Post/jobtpostcount.html">View Job Post Count</a>
+        <a href="../Post/JobPostbyID.html">View Job Post by ID</a>
+        
+        <label for="searchQuery">Search Jobs:</label>
+        <input type="text" id="searchQuery" ng-model="searchQuery" ng-change="searchJobs()">
+        
+        <div ng-if="jobs.length === 0 && !searching">
+            <p>No jobs available at the moment.</p>
+        </div>
+        
+        <div ng-if="searching" class="searching">
+            <p>Searching...</p>
+        </div>
+        
+        <div ng-repeat="job in jobs">
+            <h3 class="job-title">{{ job.Title }}</h3>
+            <p>Created At: {{ job.CreatedAt | date }}</p>
+            <p>Description: {{ job.Description }}</p>
+            <hr>
+        </div>
+        
+        <div ng-if="error" class="error">
+            <p>Error: {{ error }}</p>
+        </div>
+    </div>
+</body>
+</html>

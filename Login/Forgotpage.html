@@ -1,13 +1,77 @@
-<!-- forgotPassword.html -->
 <!DOCTYPE html>
 <html ng-app="myApp">
 <head>
     <title>Forgot Password</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 60px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        span {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        
+        .success {
+            color: green;
+        }
+        
+        .error {
+            color: red;
+        }
+    </style>
     <script>
         var app = angular.module("myApp", []);
 
-        app.controller("forgotPasswordCtrl", function ($scope, $http) {
+        app.controller("forgotPasswordCtrl", function ($scope, $http, $window) {
             $scope.sendResetEmail = function () {
                 var user = {
                     Email: $scope.email
@@ -16,12 +80,16 @@
                     function (response) {
                         // Check response and handle success or error
                         $scope.msg = response.data.Msg;
-                        $scope.color = response.status === 200 ? "green" : "red";
+                        $scope.color = response.status === 200 ? "success" : "error";
+                        
+                        if (response.status === 200) {
+                            $window.location.href = "changepassword.html"; // Redirect on success
+                        }
                     },
                     function (error) {
                         // Handle error
                         $scope.msg = "An error occurred. Please try again later.";
-                        $scope.color = "red";
+                        $scope.color = "error";
                     }
                 );
             };
@@ -29,18 +97,16 @@
     </script>
 </head>
 <body ng-controller="forgotPasswordCtrl">
-    <h1>Forgot Password</h1>
-    <form>
-        <div>
+    <div class="container">
+        <h1>Forgot Password</h1>
+        <form>
             <label for="email">Email:</label>
             <input type="email" id="email" ng-model="email" required>
-        </div>
-        <div>
+            
             <button ng-click="sendResetEmail()">Send Reset Email</button>
-        </div>
-        <div>
-            <span style="color:{{color}}">{{msg}}</span>
-        </div>
-    </form>
+            
+            <span ng-class="color">{{msg}}</span>
+        </form>
+    </div>
 </body>
 </html>
